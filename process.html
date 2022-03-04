@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<body onload="myFunction()">
+	<h1>Welcome to the HPLC data parser!</h1>
+	<h2>A data-parser for those of us whose HPLC dinosaurs are still running Star Chromatography.</h2>
+	<p>Version 2.0, now without the tcl dependency (3/2022, roughly two decades after HPLC purchase)</p>
+
+	<p>a random side project from Dr. Catherine Sarisky</p>
+	<h2>How to use:</h2>
+	<ul>
+		<li>Run a recalc normally, generating .txt files. 
+			<ul><li>Be sure your integration settings are correct.  You want peaks identified. You don't want random noise identified.  This step is IMPORTANT - garbage in will result in garbage out.</li>
+				<li>(Add better directions here)</ul></li>
+		<li>Visit this page.  Click "Choose files" and upload all your files.  (Use shift-click or control-click to select multiples.)</li>
+		<li>Click "Click for download".  Open the .csv file that downloads with Excel or another program that'll read a .csv.  Be sure to save it somewhere with a descriptive name.</li>
+	</ul>
+	<p>Please report any bugs. :)  In theory, this code should work on any computer and any modern browser.  It probably doesn't work on Windows 98/Netscape navigator. Sorry!</p>
+	<p>Note: This html file works anywhere, even without internet access, so if your HPLC computer runs a modern browser but doesn't have internet, you can transfer this .html file to it.  Or "sneaker-net" your .txt files to a computer with internet and just bookmark this page.</p>
+	<hr>
+
+	<p>Peak start time: <br><input id="peakstart" type="text" value='0' /></p>
+	<p>Peak end time: <br><input id="peakend" type="text" value='60' /></p>
+	<p id="timeresult"></p>
+	<button onclick="setTimes()">Click to update time window</button><p>
+	<input type="file" id="myFile" multiple size="50" onchange="myFunction()"><p>
+<button onclick="doTheWork()">Click to process files and download results</button>
+
+<h2>Files to process</h2>
+<p id="demo"></p>
+<p id="moredemo"></p>
+  
+<script>
+let q = -1;
+let filesArray = []
+let offsetsArray = []
+// random values
+let inputStart = 0
+let inputEnd = 60
+
+let csvContent = "data:text/csv;charset=utf-8,";
+csvContent += "Status,File Location,Retention Time,Width,Integration (Counts) \n"
+
+function setTimes() {
+inputStart = document.getElementById('peakstart').value ;
+inputEnd = document.getElementById('peakend').value ;
+document.getElementById("timeresult").innerHTML = "Will only record peak data from " + inputStart + " to " + inputEnd + " minutes. (Ignore peaks outside this window!)" ;
+}
+
+
+async function read(file) {
+  // Read the file as text
+  let myFile = await file.text()
+  	
+  //document.getElementById("moredemo").innerHTML = myFile
+  q++
+  filesArray[q] = (myFile.split('\n'))
+  for (oneline of filesArray[q]) {
+	//console.log(oneline)
+	}
+  offsetsArray[q] = filesArray[q].findIndex((element,index) => element.includes("Peak Info")) + 3
+  console.log(filesArray[q][offsetsArray[q]])
+  let thisFileName = filesArray[q][0].split("\t")[1] ;
+  let alertStatus = ""
+	if (filesArray[q][offsetsArray[q]+1].length >= 2) {
+	  alertStatus = "ALERT! Extra peak(s)!" 
+	  console.log('found extra peak')
+	} else {console.log('no extra peak. length is ' + filesArray[q][offsetsArray[q]+1].length) };
+
+  let tmpline = filesArray[q][offsetsArray[q]].split("\t")
+  csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
+
+  let increment = 1
+  while (filesArray[q][offsetsArray[q]+increment].length >= 2) {
+	  let tmpline = filesArray[q][offsetsArray[q]+increment].split("\t")
+  	  csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
+	  increment++
+  }
+};
+
+function doTheWork() {
+	var encodedUri = encodeURI(csvContent); 
+	window.open(encodedUri)
+}
+
+function myFunction(){
+  q = -1 ;
+  offsetsArray=[];
+  filesArray=[];
+  var x = document.getElementById("myFile");
+  var txt = "";
+  if ('files' in x) {
+    if (x.files.length == 0) {
+      txt = "Select one or more files.";
+    } else {
+      for (var i = 0; i < x.files.length; i++) {
+    //    txt += "<br><strong>" + (i+1) + ". file</strong><br>";
+	      txt += "<br><strong>" + (i+1) ;
+	      read(x.files[i])
+	var file = x.files[i];
+        if ('name' in file) {
+		txt += ": " + file.name + "</strong><br>";
+        }
+        if ('size' in file) {
+          txt += "size: " + file.size + " bytes <br>";
+        }
+      }
+    }
+  } 
+  else {
+    if (x.value == "") {
+      txt += "Select one or more files.";
+    } else {
+      txt += "The files property is not supported by your browser!";
+      txt  += "<br>The path of the selected file: " + x.value; // If the browser does not support the files property, it will return the path of the selected file instead. 
+    }
+  }
+  document.getElementById("demo").innerHTML = txt;
+
+}
+
+
+</script>
+
+<p><strong>Tip:</strong> Use the Control or the Shift key to select multiple files.</p>
+
+</body>
+</html>
