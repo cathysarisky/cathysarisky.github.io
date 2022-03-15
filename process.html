@@ -68,9 +68,9 @@ async function read(file) {
 
   let tmpline = filesArray[q][offsetsArray[q]].split("\t")
 	console.log('tmpline is ',tmpline[0],inputStart,inputEnd, tmpline[0]> inputStart, tmpline[0] < inputEnd )
-	 if (tmpline[0] > inputStart && tmpline[0] < inputEnd) {
+	 if ((tmpline[0] > inputStart) && (tmpline[0] < inputEnd)) {
   		csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
-	 } else {console.log('skip line 1',tmpline) }
+	 } else {console.log('skip line 1',tmpline, (tmpline[0] > inputStart) && (tmpline[0] < inputEnd)) }
 
   let increment = 1
   while (filesArray[q][offsetsArray[q]+increment].length >= 2) {
