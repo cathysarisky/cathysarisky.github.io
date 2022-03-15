@@ -28,7 +28,7 @@
 <h2>Files to process</h2>
 <p id="demo"></p>
 <p id="moredemo"></p>
-  
+
 <script>
 let q = -1;
 let filesArray = []
@@ -67,12 +67,18 @@ async function read(file) {
 	} else {console.log('no extra peak. length is ' + filesArray[q][offsetsArray[q]+1].length) };
 
   let tmpline = filesArray[q][offsetsArray[q]].split("\t")
-  csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
+	console.log('tmpline is ',tmpline[0],inputStart,inputEnd, tmpline[0]> inputStart, tmpline[0] < inputEnd )
+	 if (tmpline[0] > inputStart && tmpline[0] < inputEnd) {
+  		csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
+	 } else {console.log('skip line 1',tmpline) }
 
   let increment = 1
   while (filesArray[q][offsetsArray[q]+increment].length >= 2) {
 	  let tmpline = filesArray[q][offsetsArray[q]+increment].split("\t")
-  	  csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
+	  console.log('tmpline is ',tmpline[0],inputStart,inputEnd, tmpline[0]>inputStart, tmpline[0] < inputEnd)
+	  if (tmpline[0] > inputStart && tmpline[0] < inputEnd) {
+	  csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
+	  } else {console.log("skip line 2",tmpline)}
 	  increment++
   }
 };
