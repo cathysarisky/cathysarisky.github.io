@@ -68,7 +68,7 @@ async function read(file) {
 
   let tmpline = filesArray[q][offsetsArray[q]].split("\t")
 	console.log('tmpline is ',tmpline[0],inputStart,inputEnd, tmpline[0]> inputStart, tmpline[0] < inputEnd )
-	 if ((tmpline[0] > inputStart) && (tmpline[0] < inputEnd)) {
+	 if ((Number(tmpline[0]) > Number(inputStart)) && (Number(tmpline[0]) < Number(inputEnd))) {
   		csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
 	 } else {console.log('skip line 1',tmpline, (tmpline[0] > inputStart) && (tmpline[0] < inputEnd)) }
 
@@ -76,7 +76,7 @@ async function read(file) {
   while (filesArray[q][offsetsArray[q]+increment].length >= 2) {
 	  let tmpline = filesArray[q][offsetsArray[q]+increment].split("\t")
 	  console.log('tmpline is ',tmpline[0],inputStart,inputEnd, tmpline[0]>inputStart, tmpline[0] < inputEnd)
-	  if (tmpline[0] > inputStart && tmpline[0] < inputEnd) {
+	  if (Number(tmpline[0]) > Number(inputStart) && Number(tmpline[0]) < Number(inputEnd)) {
 	  csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
 	  } else {console.log("skip line 2",tmpline)}
 	  increment++
