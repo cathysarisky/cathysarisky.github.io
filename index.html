@@ -11,20 +11,22 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+	background-color: #eee;
 }
 
 /* Style the header */
 .header {
-  background-color: #f1f1f1;
+  background-color: #fff;
   padding: 30px;
   text-align: center;
-  font-size: 35px;
+  font-size: 20px;
 }
 
 /* Container for flexboxes */
 .row {
   display: -webkit-flex;
   display: flex;
+  justify-content: space-around;	
 }
 
 /* Create three equal columns that sits next to each other */
@@ -37,6 +39,7 @@ body {
    border: 1px solid;
   padding: 10px;
   box-shadow: 1px 1px;
+  width: 300px ; 
 }
 
 /* Style the footer */
@@ -58,7 +61,8 @@ body {
 <body>
 
 <div class="header">
-  Welcome to my home on the web!  Here's a collection of links to stuff I've built:
+  Welcome to my home on the web!  <br>
+	Here's a collection of links to stuff I've built:
 </div>
 
 <div class="row">
