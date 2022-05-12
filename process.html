@@ -3,19 +3,21 @@
 <body onload="myFunction()">
 	<h1>Welcome to the HPLC data parser!</h1>
 	<h2>A data-parser for those of us whose HPLC dinosaurs are still running Star Chromatography.</h2>
-	<p>Version 2.01, now without the tcl dependency (3/2022, roughly two decades after HPLC purchase)</p>
-
+	<p>Version 2.02, now without the tcl dependency (3/2022, roughly two decades after HPLC purchase)</p>
+	<p>Added both the name of the .txt file and the .run file, since sometimes they don't match! </p>
 	<p>a random side project from Dr. Catherine Sarisky</p>
 	<h2>How to use:</h2>
 	<ul>
 		<li>Run a recalc normally, generating .txt files. 
-			<ul><li>Be sure your integration settings are correct.  You want peaks identified. You don't want random noise identified.  This step is IMPORTANT - garbage in will result in garbage out.</li>
+			<ul><li>Be sure your integration settings are correct.  You want peaks identified. You don't want random noise identified.  
+					This step is IMPORTANT - garbage in will result in garbage out.</li>
 				<li>(Add better directions here)</ul></li>
 		<li>Visit this page.  Click "Choose files" and upload all your files.  (Use shift-click or control-click to select multiples.)</li>
 		<li>Click "Click for download".  Open the .csv file that downloads with Excel or another program that'll read a .csv.  Be sure to save it somewhere with a descriptive name.</li>
 	</ul>
 	<p>Please report any bugs. :)  In theory, this code should work on any computer and any modern browser.  It probably doesn't work on Windows 98/Netscape navigator. Sorry!</p>
-	<p>Note: This html file works anywhere, even without internet access, so if your HPLC computer runs a modern browser but doesn't have internet, you can transfer this .html file to it.  Or "sneaker-net" your .txt files to a computer with internet and just bookmark this page.</p>
+	<p>Note: This html file works anywhere, even without internet access, so if your HPLC computer runs a modern browser but doesn't have internet, you can transfer this .html file
+	to it.  Or "sneaker-net" your .txt files to a computer with internet and just bookmark this page.</p>
 	<hr>
 
 	<p>Peak start time: <br><input id="peakstart" type="text" value='0' /></p>
@@ -38,7 +40,7 @@ let inputStart = 0
 let inputEnd = 60
 
 let csvContent = "data:text/csv;charset=utf-8,";
-csvContent += "Status,File Location,Retention Time,Width,Integration (Counts) \n"
+csvContent += "Status,File Location,Run file,Retention Time,Width,Integration (Counts) \n"
 
 function setTimes() {
 inputStart = document.getElementById('peakstart').value ;
@@ -60,6 +62,7 @@ async function read(file) {
   offsetsArray[q] = filesArray[q].findIndex((element,index) => element.includes("Peak Info")) + 3
   console.log(filesArray[q][offsetsArray[q]])
   let thisFileName = filesArray[q][0].split("\t")[1] ;
+  let otherFileName = file.name
   let alertStatus = ""
 	if (filesArray[q][offsetsArray[q]+1].length >= 2) {
 	  alertStatus = "ALERT! Extra peak(s)!" 
@@ -69,7 +72,7 @@ async function read(file) {
   let tmpline = filesArray[q][offsetsArray[q]].split("\t")
 
 	 if ((Number(tmpline[0]) > Number(inputStart)) && (Number(tmpline[0]) < Number(inputEnd))) {
-  		csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
+  		csvContent += alertStatus + "," + otherFileName + "," +thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
 	 } else {console.log('skip line 1',tmpline, (tmpline[0] > inputStart) && (tmpline[0] < inputEnd)) }
 
   let increment = 1
@@ -77,7 +80,7 @@ async function read(file) {
 	  let tmpline = filesArray[q][offsetsArray[q]+increment].split("\t")
 
 	  if (Number(tmpline[0]) > Number(inputStart) && Number(tmpline[0]) < Number(inputEnd)) {
-	  csvContent += alertStatus + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
+	  csvContent += alertStatus + "," + otherFileName + "," + thisFileName + "," + tmpline[0]+ "," + tmpline[4] + "," + tmpline[5] + "\n";
 	  } else {console.log("skip line 2",tmpline)}
 	  increment++
   }
